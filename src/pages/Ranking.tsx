@@ -2,7 +2,7 @@
 import { useGame } from '../context/GameContext';
 
 export default function Ranking({ onRestart }: { onRestart: () => void }) {
-    const { gameMessage, lobbyCode, players } = useGame();
+    const { gameMessage, lobbyCode} = useGame();
 
     return (
         <div className="max-w-2xl mx-auto pt-16 px-6 text-center">
