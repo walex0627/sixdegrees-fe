@@ -12,14 +12,17 @@ export const SearchInput = ({ label, type, onSelect }: Props) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<GameNode[]>([]);
     const [loading, setLoading] = useState(false);
+    const [lastSelected, setLastSelected] = useState<string | null>(null);
 
     useEffect(() => {
+        if (query === lastSelected) return;
+
         const delayDebounce = setTimeout(async () => {
             if (query.length < 3) return setResults([]);
             setLoading(true);
             try {
-                // Tip: Es mejor usar una variable de entorno para la URL en el futuro
-                const { data } = await axios.get(`https://sixdegrees-be-production.up.railway.app/api/game/search?q=${query}&type=${type}`);
+                const apiUrl = import.meta.env.VITE_API_URL || 'https://sixdegrees-be-production.up.railway.app';
+                const { data } = await axios.get(`${apiUrl}/api/game/search?q=${query}&type=${type}`);
                 setResults(data);
             } catch (err) {
                 console.error("Error searching", err);
@@ -46,12 +49,13 @@ export const SearchInput = ({ label, type, onSelect }: Props) => {
             </div>
 
             {results.length > 0 && (
-                <div className="absolute z-50 w-full mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-2xl max-h-60 overflow-y-auto">
+                <div className="absolute z-[100] w-full mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-h-60 overflow-y-auto">
                     {results.map((item) => (
                         <button
                             key={item.id}
                             type="button"
-                            onClick={() => { 
+                            onMouseDown={() => { 
+                                setLastSelected(item.name);
                                 onSelect(item); // Notifica al padre
                                 setQuery(item.name); // Actualiza el texto del input
                                 setResults([]); // Cierra la lista
