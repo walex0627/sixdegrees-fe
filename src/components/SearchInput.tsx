@@ -1,14 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import type { GameNode } from '../types/games.types';
+import type { GameNode, SearchInputProps } from '../types/games.types';
 
-interface Props {
-    label: string;
-    type: 'person' | 'movie';
-    onSelect: (node: GameNode) => void;
-}
-
-export const SearchInput = ({ label, type, onSelect }: Props) => {
+export const SearchInput = ({ label, type, onSelect }: SearchInputProps) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<GameNode[]>([]);
     const [loading, setLoading] = useState(false);

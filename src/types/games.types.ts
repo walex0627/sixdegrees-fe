@@ -27,3 +27,37 @@ export interface ChainSubmission {
   username: string;
   chain: GameNode[];
 }
+
+export interface SubmitedChain {
+    id: string;
+    type: 'person' | 'movie';
+}
+
+export interface GameContextType {
+    lobbyCode: string;
+    players: Player[];
+    username: string;
+    hostUsername: string; // <--- AGREGADO PARA ROBUSTEZ Y EVITAR MULTI-HOSTING
+    startNode: GameNode | null;
+    targetNode: GameNode | null;
+    gameMessage: string;
+    screen: 'home' | 'lobby' | 'game' | 'ranking';
+    
+    // Setters
+    setGameData: (data: any) => void;
+    setScreen: (screen: 'home' | 'lobby' | 'game' | 'ranking') => void;
+    setGameMessage: (msg: string) => void;
+
+    // Acciones de Juego (Eventos Socket)
+    createLobby: (data: any) => void;
+    joinLobby: (data: any) => void;
+    startGame: () => void;
+    submitChain: (chain: SubmitedChain[]) => void;
+    updateMission: (startNode: GameNode, targetNode: GameNode) => void;
+}
+
+export interface SearchInputProps {
+    label: string;
+    type: 'person' | 'movie';
+    onSelect: (node: GameNode) => void;
+}

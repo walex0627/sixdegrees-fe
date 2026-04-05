@@ -1,7 +1,10 @@
 import { useGame } from '../context/GameContext';
 
 export default function Ranking({ onBackToLobby, onMenu }: { onBackToLobby: () => void, onMenu: () => void }) {
-    const { gameMessage, lobbyCode, players, username } = useGame();
+    const { gameMessage, lobbyCode, players, username, hostUsername } = useGame();
+    
+    // Identificar si somos el Host
+    const isHost = username && username === hostUsername;
 
     return (
         <div className="max-w-3xl mx-auto pt-10 px-4 pb-16 text-center">
@@ -35,7 +38,7 @@ export default function Ranking({ onBackToLobby, onMenu }: { onBackToLobby: () =
                 <h3 className="text-lg font-black text-white mb-6 tracking-widest uppercase">Tabla de Posiciones</h3>
                 
                 <div className="space-y-3">
-                    {(players.length > 0 ? players : [{ username, score: 0 }])
+                    {players
                         .sort((a, b) => b.score - a.score)
                         .map((p, i) => (
                         <div key={i} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${i === 0 ? 'bg-gradient-to-r from-amber-500/20 to-orange-600/20 border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)] transform scale-105 my-4' : p.username === username ? 'bg-blue-600/10 border-blue-500/30' : 'bg-slate-800/40 border-slate-700/50'}`}>
@@ -64,12 +67,14 @@ export default function Ranking({ onBackToLobby, onMenu }: { onBackToLobby: () =
                 >
                     VOLVER AL LOBBY
                 </button>
-                <button
-                    onClick={onMenu}
-                    className="w-full sm:w-auto px-10 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all border border-slate-600 hover:scale-105 active:scale-95 shadow-lg text-sm tracking-wide"
-                >
-                    NUEVA SALA
-                </button>
+                {isHost && (
+                    <button
+                        onClick={onMenu}
+                        className="w-full sm:w-auto px-10 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all border border-slate-600 hover:scale-105 active:scale-95 shadow-lg text-sm tracking-wide"
+                    >
+                        NUEVA SALA
+                    </button>
+                )}
             </div>
         </div>
     );

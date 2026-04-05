@@ -4,10 +4,11 @@ import { SearchInput } from '../components/SearchInput';
 import type { GameNode } from '../types/games.types';
 
 export default function Lobby() {
-    const { lobbyCode, startNode, targetNode, startGame, players, username, updateMission } = useGame();
+    const { lobbyCode, startNode, targetNode, startGame, players, username, hostUsername, updateMission } = useGame();
     const [copied, setCopied] = useState(false);
     
-    const isHost = players.length > 0 ? players[0].username === username : true;
+    // El host ahora está explícitamente definido para evitar fallos de orden en el array
+    const isHost = username && username === hostUsername;
     
     // Draft states for changing mission
     const [editMode, setEditMode] = useState(false);
@@ -57,18 +58,21 @@ export default function Lobby() {
                         </h3>
                         
                         <div className="space-y-2 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
-                            {(players.length > 0 ? players : [{ username, score: 0 }]).map((p, i) => (
+                            {players.map((p, i) => (
                                 <div key={i} className="flex items-center justify-between bg-slate-800/40 p-3 rounded-xl border border-slate-700/50 hover:bg-slate-800/80 transition-colors">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white shadow-inner text-sm">
                                             {p.username.charAt(0).toUpperCase()}
                                         </div>
-                                        <span className="font-semibold text-white text-sm tracking-wide">{p.username}</span>
+                                        <span className="font-semibold text-white text-sm tracking-wide">
+                                            {p.username} 
+                                            {p.username === username && <span className="text-[10px] text-blue-400 font-bold ml-2">(Tú)</span>}
+                                        </span>
                                         <span className="font-mono font-bold text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded-md text-[10px] border border-emerald-500/30 shadow-inner ml-2">
                                             {p.score || 0} pts
                                         </span>
                                     </div>
-                                    {i === 0 && (
+                                    {p.username === hostUsername && (
                                         <span className="text-[9px] uppercase font-black tracking-widest bg-pink-500/20 border border-pink-500/30 text-pink-400 py-1 px-2 rounded-md shadow-[0_0_10px_rgba(236,72,153,0.2)]">
                                             Host
                                         </span>
