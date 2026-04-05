@@ -33,6 +33,14 @@ export interface SubmitedChain {
     type: 'person' | 'movie';
 }
 
+export interface RoundResult {
+    username: string;
+    score: number;
+    message: string;
+    players?: Player[];
+    error?: boolean; // Flag opcional del backend cuando falla la validación
+}
+
 export interface GameContextType {
     lobbyCode: string;
     players: Player[];

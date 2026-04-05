@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type { Player, GameNode, SubmitedChain, GameContextType } from '../types/games.types';
+import type { Player, GameNode, SubmitedChain, GameContextType, RoundResult } from '../types/games.types';
 import { socket } from '../api/socket';
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -28,17 +28,29 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const onConnect = () => console.log('✅ Socket conectado:', socket.id);
         
-        const onGameStarted = () => {
-            console.log("🚀 El juego ha comenzado oficialmente");
+        const onGameStarted = (data: any) => {
+            console.log("🚀 El juego ha comenzado oficialmente", data);
+            if (data && data.players) {
+                setPlayers(data.players);
+            }
             setScreen('game');
         };
 
-        const onRoundResult = (data: { username: string, score: number, message: string, players?: Player[] }) => {
+        const onRoundResult = (data: RoundResult) => {
             console.log("📩 Evento round_result recibido:", data);
             
-            if (data.players) {
+            // Actualizar el ranking general si el backend lo incluye
+            if (data.players && data.players.length > 0) {
                 console.log("🏆 Sincronizando ranking general del backend");
                 setPlayers(data.players);
+            }
+
+            // Si el backend manda error: true, fue un fallo de validación
+            if (data.error) {
+                console.warn("⚠️ El backend reportó un error validando la cadena");
+                setGameMessage('⚠️ Hubo un problema técnico validando tu cadena. Intenta con una cadena más corta.');
+                setScreen('ranking');
+                return;
             }
             
             // Determinar si yo fui el ganador

@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { SearchInput } from '../components/SearchInput';
 import type { GameNode } from '../types/games.types';
 
 export default function GameRoom() {
-    const { startNode, targetNode, submitChain, players, username } = useGame();
+    const { startNode, targetNode, submitChain, players, username, screen } = useGame();
     
     if (!startNode || !targetNode) return <div className="text-center mt-32 text-xl animate-pulse">Sincronizando partida cósmica...</div>;
 
     const [chain, setChain] = useState<GameNode[]>([startNode]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Cuando el contexto cambie de pantalla (hacia 'ranking'), resetear el estado de carga
+    useEffect(() => {
+        if (screen === 'ranking') setIsSubmitting(false);
+    }, [screen]);
 
     const addToChain = (node: GameNode) => {
         if (chain.length > 0 && chain[chain.length - 1]?.id === node.id) return;
@@ -19,8 +25,10 @@ export default function GameRoom() {
     const nextSearchType = chain[chain.length - 1]?.type === 'person' ? 'movie' : 'person';
 
     const handleFinalSubmit = () => {
-        if (isTargetReached) {
+        if (isTargetReached && !isSubmitting) {
+            setIsSubmitting(true);
             submitChain(chain.map(n => ({ id: n.id, type: n.type })));
+            // El isSubmitting se resetea automáticamente cuando screen cambie a 'ranking'
         }
     };
 
@@ -68,7 +76,7 @@ export default function GameRoom() {
             </div>
 
             {/* COLUMNA DERECHA: El Juego (Línea de tiempo) */}
-            <div className="xl:col-span-3 space-y-6 flex flex-col h-full">
+            <div className="xl:col-span-3 space-y-6 flex flex-col">
                 
                 {/* ÁREA DE BÚSQUEDA */}
                 <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700/50 shadow-xl backdrop-blur-xl shrink-0 relative z-50">
@@ -97,9 +105,14 @@ export default function GameRoom() {
                             </h2>
                             <button
                                 onClick={handleFinalSubmit}
-                                className="w-full max-w-sm mx-auto bg-gradient-to-r from-emerald-500 to-green-600 hover:scale-105 active:scale-95 text-white font-black py-4 rounded-xl text-lg shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all flex items-center justify-center gap-2 border border-emerald-400/50"
+                                disabled={isSubmitting}
+                                className={`w-full max-w-sm mx-auto font-black py-4 rounded-xl text-lg transition-all flex items-center justify-center gap-2 border ${
+                                    isSubmitting 
+                                        ? 'bg-slate-800 text-slate-400 border-slate-700 cursor-not-allowed opacity-80' 
+                                        : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:scale-105 active:scale-95 text-white shadow-[0_0_25px_rgba(16,185,129,0.4)] border-emerald-400/50'
+                                }`}
                             >
-                                🚀 TERMINAR PARTIDA
+                                {isSubmitting ? '⏳ VALIDANDO CONEXIONES...' : '🚀 TERMINAR PARTIDA'}
                             </button>
                         </div>
                     )}
@@ -107,9 +120,9 @@ export default function GameRoom() {
 
                 {/* LÍNEA DE TIEMPO SENSACIONAL */}
                 <div className="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-6 flex-grow shadow-inner relative min-h-[250px] z-10 w-full flex items-center justify-center">
-                    <div className="flex flex-wrap items-center justify-center gap-y-8 gap-x-2 w-full h-full pb-2">
+                    <div className="flex flex-wrap items-center justify-center gap-y-8 gap-x-2 w-full pb-2">
                         {chain.map((node, i) => (
-                            <div key={`${node.id}-${i}`} className="flex items-center group relative h-full">
+                            <div key={`${node.id}-${i}`} className="flex items-center group relative">
                                 
                                 {/* Nodo */}
                                 <div className={`relative flex flex-col items-center bg-slate-900/80 p-3 rounded-xl border-2 transform transition-all hover:-translate-y-1 hover:shadow-xl hover:z-20 w-32 min-h-[170px] justify-start pt-4 ${i === 0 ? 'border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : isTargetReached && i === chain.length - 1 ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'border-slate-700/50 hover:border-slate-500'}`}>
