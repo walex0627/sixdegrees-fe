@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import type { GameNode, SearchInputProps } from '../types/games.types';
 
-export const SearchInput = ({ label, type, onSelect }: SearchInputProps) => {
+export const SearchInput = ({ label, type, onSelect, contextId, contextType }: SearchInputProps) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<GameNode[]>([]);
     const [loading, setLoading] = useState(false);
@@ -16,7 +16,13 @@ export const SearchInput = ({ label, type, onSelect }: SearchInputProps) => {
             setLoading(true);
             try {
                 const apiUrl = import.meta.env.VITE_API_URL || 'https://sixdegrees-be-production.up.railway.app';
-                const { data } = await axios.get(`${apiUrl}/api/game/search?q=${query}&type=${type}`);
+                
+                // Si hay contexto (estamos en GameRoom con nodo previo), usamos el endpoint contextual
+                const url = contextId && contextType
+                    ? `${apiUrl}/api/game/connections?contextId=${contextId}&contextType=${contextType}&q=${encodeURIComponent(query)}`
+                    : `${apiUrl}/api/game/search?q=${encodeURIComponent(query)}&type=${type}`;
+
+                const { data } = await axios.get(url);
                 setResults(data);
             } catch (err) {
                 console.error("Error searching", err);
@@ -26,7 +32,7 @@ export const SearchInput = ({ label, type, onSelect }: SearchInputProps) => {
         }, 500);
 
         return () => clearTimeout(delayDebounce);
-    }, [query, type]);
+    }, [query, type, contextId, contextType]);
 
     return (
         <div className="relative w-full">

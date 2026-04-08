@@ -96,6 +96,8 @@ export default function GameRoom() {
                                 label={`Ingresa un(a) ${nextSearchType === 'movie' ? 'Película' : 'Actor/Actriz'}`}
                                 type={nextSearchType}
                                 onSelect={addToChain}
+                                contextId={chain.length >= 1 ? chain[chain.length - 1].id : undefined}
+                                contextType={chain.length >= 1 ? chain[chain.length - 1].type : undefined}
                             />
                         </div>
                     ) : (

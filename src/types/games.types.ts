@@ -68,4 +68,6 @@ export interface SearchInputProps {
     label: string;
     type: 'person' | 'movie';
     onSelect: (node: GameNode) => void;
+    contextId?: string;      // ID del último nodo (para búsqueda contextual en GameRoom)
+    contextType?: 'person' | 'movie'; // Tipo del último nodo
 }
