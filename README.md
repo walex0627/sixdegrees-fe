@@ -1,73 +1,81 @@
-# React + TypeScript + Vite
+# The Six Degrees 🎬
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A dynamic, real-time multiplayer game where players race to connect actors and movies within the vast cinematic universe. Based on the "Six Degrees of Separation" concept, this web application challenges your movie knowledge in a competitive, fast-paced environment.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features
 
-## React Compiler
+- **Real-time Multiplayer:** Powered by Socket.io for instantaneous game state synchronization across all clients.
+- **Dynamic Connection Path:** Build chains between actors and movies. Validations are handled in real-time.
+- **Contextual Search:** Integrated with TMDB (The Movie Database) to provide intelligent, connection-aware search suggestions.
+- **Host Controls:** Creators have absolute control over the lobby, mission updates, and game starting.
+- **Live Leaderboard:** Track scores and rankings as players complete their chains.
+- **Responsive Design:** Premium UI built with Tailwind CSS v4, featuring glassmorphism, smooth animations, and a sleek dark theme.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Core:** [React 19](https://react.dev/) with [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Real-time Communication:** [Socket.io-client](https://socket.io/docs/v4/client-api/)
+- **API Requests:** [Axios](https://axios-http.com/)
+- **Icons:** [Lucide React](https://lucide.dev/)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 📦 Installation & Setup
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/walex0627/sixdegrees-fe.git
+   cd sixdegrees-fe
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root directory and add your backend API URL:
+   ```env
+   VITE_API_URL=https://sixdegrees-be-production.up.railway.app
+   ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 🎮 How to Play
+
+1. **Enter your nickname:** Start by choosing a unique name for the session.
+2. **Create or Join a Lobby:** 
+   - **Host:** Search for a starting actor/actress and a target movie to set the challenge.
+   - **Player:** Use a unique 6-character PIN to join your friends' lobby.
+3. **Connect the Dots:** Once the game starts, find the shortest path of connections (Actor → Movie → Actor → Movie...) to reach the target objective.
+4. **Win the Round:** The first player to successfully establish the connection wins the points and the round!
+
+---
+
+## ⚙️ Architecture Highlights
+
+- **GameContext:** Centralized state management using React Context API to handle socket events, player data, and navigation.
+- **Socket Integration:** Robust event handling for `round_result`, `mission_updated`, and `player_joined` to ensure all clients stay in sync.
+- **Contextual Search Logic:** Optimized search inputs that switch between global TMDB search and contextual connection search based on the current chain state.
+
+---
+
+## 📄 License
+
+This project is private and for educational purposes. All rights reserved by the original authors.
