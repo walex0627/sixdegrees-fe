@@ -17,7 +17,7 @@ export const SearchInput = ({ label, type, onSelect, contextId, contextType }: S
             try {
                 const apiUrl = import.meta.env.VITE_API_URL || 'https://sixdegrees-be-production.up.railway.app';
                 
-                // Si hay contexto (estamos en GameRoom con nodo previo), usamos el endpoint contextual
+                // Use contextual endpoint when a previous node exists (GameRoom flow)
                 const url = contextId && contextType
                     ? `${apiUrl}/api/game/connections?contextId=${contextId}&contextType=${contextType}&q=${encodeURIComponent(query)}`
                     : `${apiUrl}/api/game/search?q=${encodeURIComponent(query)}&type=${type}`;
@@ -56,9 +56,9 @@ export const SearchInput = ({ label, type, onSelect, contextId, contextType }: S
                             type="button"
                             onMouseDown={() => { 
                                 setLastSelected(item.name);
-                                onSelect(item); // Notifica al padre
-                                setQuery(item.name); // Actualiza el texto del input
-                                setResults([]); // Cierra la lista
+                                onSelect(item); // Notify to father
+                                setQuery(item.name); // Update input text
+                                setResults([]); // Close list
                             }}
                             className="flex items-center w-full p-2 hover:bg-slate-700 transition gap-3 border-b border-slate-700 last:border-0"
                         >

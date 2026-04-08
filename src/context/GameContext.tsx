@@ -17,19 +17,19 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const setGameData = (data: any) => {
         if (data.lobbyCode) setLobbyCode(data.lobbyCode);
         if (data.username) setUsername(data.username);
-        // Si el backend lo manda explícito lo usamos, o sino el FE lo auto-asigna
+        // Use explicit hostUsername from backend if provided; otherwise the FE assigns it
         if (data.hostUsername) setHostUsername(data.hostUsername);
         if (data.startNode) setStartNode(data.startNode);
         if (data.targetNode) setTargetNode(data.targetNode);
         if (data.players) setPlayers(data.players);
     };
 
-    // --- LÓGICA DE SOCKETS ---
+    // --- SOCKET EVENT HANDLERS ---
     useEffect(() => {
-        const onConnect = () => console.log('✅ Socket conectado:', socket.id);
+        const onConnect = () => console.log('✅ Socket connected:', socket.id);
         
         const onGameStarted = (data: any) => {
-            console.log("🚀 El juego ha comenzado oficialmente", data);
+            console.log('🚀 Game started', data);
             if (data && data.players) {
                 setPlayers(data.players);
             }
@@ -39,37 +39,37 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         const onRoundResult = (data: RoundResult) => {
             console.log("📩 Evento round_result recibido:", data);
             
-            // Actualizar el ranking general si el backend lo incluye
+            // Sync the global ranking if the backend includes the players array
             if (data.players && data.players.length > 0) {
-                console.log("🏆 Sincronizando ranking general del backend");
+                console.log('🏆 Syncing global ranking from backend');
                 setPlayers(data.players);
             }
 
-            // Si el backend manda error: true, fue un fallo de validación
+            // If the backend signals a validation error, show a user-friendly message
             if (data.error) {
-                console.warn("⚠️ El backend reportó un error validando la cadena");
-                setGameMessage('⚠️ Hubo un problema técnico validando tu cadena. Intenta con una cadena más corta.');
+                console.warn('⚠️ Backend reported a chain validation error');
+                setGameMessage('⚠️ There was a technical issue validating your chain. Try a shorter path.');
                 setScreen('ranking');
                 return;
             }
             
-            // Determinar si yo fui el ganador
+            // Determine if the current user is the round winner
             const isWinner = username && data.username.trim().toLowerCase() === username.trim().toLowerCase();
             
             if (isWinner) {
-                console.log("🎯 Fui el ganador, mostrando veredicto personal...");
+                console.log('🎯 Current user won — displaying personal verdict');
                 setGameMessage(data.message);
             } else {
-                console.log("🎯 Alguien más ganó, redirigiendo con mensaje...");
-                setGameMessage(`¡El jugador ${data.username} completó la misión primero y ganó ${data.score} puntos!`);
+                console.log('🎯 Another player won — redirecting with announcement');
+                setGameMessage(`Player ${data.username} completed the mission first and earned ${data.score} points!`);
             }
             
-            // Mandamos a TODOS los jugadores a la pantalla de Ranking
+            // Navigate all players to the Ranking screen
             setScreen('ranking');
         };
 
         const onMissionUpdated = (data: { startNode: GameNode, targetNode: GameNode }) => {
-            console.log("🔄 Misión actualizada recibida:", data);
+            console.log('🔄 Mission updated received:', data);
             if (data.startNode) setStartNode(data.startNode);
             if (data.targetNode) setTargetNode(data.targetNode);
             setScreen('lobby');
@@ -77,13 +77,13 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         };
 
         const onPlayerJoined = (data: { players: Player[] }) => {
-            console.log("👥 Lista de jugadores actualizada:", data);
+            console.log('👥 Player list updated:', data);
             if (data.players) {
                 setPlayers(data.players);
             }
         };
 
-        // Escuchadores de eventos
+        // Register socket event listeners
         socket.on('connect', onConnect);
         socket.on('game_started', onGameStarted);
         socket.on('round_result', onRoundResult);
@@ -97,9 +97,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
             socket.off('mission_updated', onMissionUpdated);
             socket.off('player_joined', onPlayerJoined);
         };
-    }, [username]); // Dependencias: si username cambia, se vuelve a suscribir
+    }, [username]); // Re-subscribe when username changes
 
-    // --- ACCIONES ---
+    // --- ACTIONS ---
 
     const createLobby = (data: any) => {
         if (!socket.connected) socket.connect();
@@ -112,7 +112,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
                 ...data, 
                 lobbyCode: res.lobbyCode,
                 username: data.username,
-                hostUsername: data.username, // Como yo lo creé, soy el HOST universalmente local.
+                hostUsername: data.username, // Lobby creator is always the host
                 players: [{ username: data.username, score: 0, isReady: true }]
             });
             setScreen('lobby');
@@ -131,7 +131,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
                     lobbyCode: data.lobbyCode, 
                     startNode: res.startNode, 
                     targetNode: res.targetNode,
-                    hostUsername: res.hostUsername || (res.players && res.players.length > 0 ? res.players[0].username : ''), // <--- LO ESPERAMOS
+                    hostUsername: res.hostUsername || (res.players && res.players.length > 0 ? res.players[0].username : ''), // Prefer explicit hostUsername from backend
                     players: res.players
                 });
                 setScreen('lobby');
@@ -146,7 +146,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const submitChain = (chain: SubmitedChain[]) => {
-        console.log("🚀 Enviando cadena al lobby:", lobbyCode);
+        console.log('🚀 Submitting chain for lobby:', lobbyCode);
         socket.emit('submit_chain', {
             lobby: lobbyCode,
             username,
@@ -155,7 +155,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const updateMission = (startNode: GameNode, targetNode: GameNode) => {
-        console.log("🔧 Actualizando misión del lobby:", lobbyCode);
+        console.log('🔧 Updating mission for lobby:', lobbyCode);
         socket.emit('update_mission', {
             lobby_code: lobbyCode,
             startNode,
@@ -176,6 +176,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
 export const useGame = () => {
     const context = useContext(GameContext);
-    if (!context) throw new Error('useGame debe usarse dentro de GameProvider');
+    if (!context) throw new Error('useGame must be used within a GameProvider');
     return context;
 };

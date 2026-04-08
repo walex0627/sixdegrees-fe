@@ -3,7 +3,7 @@ import { useGame } from '../context/GameContext';
 export default function Ranking({ onBackToLobby, onMenu }: { onBackToLobby: () => void, onMenu: () => void }) {
     const { gameMessage, lobbyCode, players, username, hostUsername } = useGame();
     
-    // Identificar si somos el Host
+    // Determine if the current user is the host
     const isHost = username && username === hostUsername;
 
     return (
@@ -18,7 +18,7 @@ export default function Ranking({ onBackToLobby, onMenu }: { onBackToLobby: () =
                 </p>
             </div>
 
-            {/* Mensaje del Director */}
+            {/* Director message card */}
             <div className="mb-8 p-6 md:p-8 rounded-3xl bg-slate-900/80 border border-amber-500/30 relative overflow-hidden backdrop-blur-xl shadow-[0_0_30px_rgba(245,158,11,0.15)] animate-in fade-in zoom-in-95 duration-700 delay-100 transform hover:scale-[1.01] transition-transform">
                 <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-amber-400 to-orange-600 shadow-[0_0_10px_rgba(245,158,11,1)]" />
                 <div className="absolute -top-16 -right-16 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
@@ -32,7 +32,7 @@ export default function Ranking({ onBackToLobby, onMenu }: { onBackToLobby: () =
                 </p>
             </div>
 
-            {/* RANKING FINAL */}
+            {/* FINAL RANKING */}
             <div className="bg-slate-900/60 p-6 md:p-8 rounded-3xl border border-slate-800 backdrop-blur-md shadow-xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 relative overflow-hidden">
                 
                 <h3 className="text-lg font-black text-white mb-6 tracking-widest uppercase">Tabla de Posiciones</h3>

@@ -7,7 +7,7 @@ export default function Lobby() {
     const { lobbyCode, startNode, targetNode, startGame, players, username, hostUsername, updateMission } = useGame();
     const [copied, setCopied] = useState(false);
     
-    // El host ahora está explícitamente definido para evitar fallos de orden en el array
+    // Host identity is determined explicitly to prevent array-order-based role errors
     const isHost = username && username === hostUsername;
     
     // Draft states for changing mission
@@ -34,7 +34,7 @@ export default function Lobby() {
         <div className="max-w-5xl mx-auto pt-4 pb-12 px-4 md:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                 
-                {/* COLUMNA IZQUIERDA: Info de Sala y Jugadores */}
+                {/* LEFT COLUMN: Room Info & Players */}
                 <div className="lg:col-span-1 space-y-4">
                     <div className="bg-slate-900/60 border border-slate-700/50 p-5 md:p-6 rounded-2xl backdrop-blur-xl shadow-xl relative overflow-hidden group">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-pink-500"></div>
@@ -83,7 +83,7 @@ export default function Lobby() {
                     </div>
                 </div>
 
-                {/* COLUMNA DERECHA: Tablero de Misión */}
+                {/* RIGHT COLUMN: Mission Board */}
                 <div className="lg:col-span-2 space-y-6 flex flex-col items-center justify-center bg-slate-900/40 border border-slate-800/50 p-6 md:p-10 rounded-2xl backdrop-blur-xl shadow-xl min-h-[450px] relative">
                     
                     <div className="absolute top-0 right-0 w-48 h-48 bg-pink-600/10 rounded-full blur-3xl"></div>
@@ -96,7 +96,7 @@ export default function Lobby() {
                     <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-10 z-10 min-h-[220px]">
                         {!editMode ? (
                             <>
-                                {/* Nodo Inicial */}
+                                {/* Start Node */}
                                 <div className="relative group flex-1 max-w-[200px] w-full">
                                     <div className="absolute -inset-2 bg-gradient-to-b from-blue-500/30 to-blue-800/30 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition duration-500"></div>
                                     <div className="bg-slate-900/80 p-5 rounded-2xl border border-blue-500/30 relative flex flex-col items-center shadow-lg transform transition-all group-hover:-translate-y-1 w-full text-center backdrop-blur-md">
@@ -110,12 +110,12 @@ export default function Lobby() {
                                     </div>
                                 </div>
 
-                                {/* Flecha Animada */}
+                                {/* Animated Arrow */}
                                 <div className="text-4xl text-slate-500 font-light flex items-center animate-pulse rotate-90 sm:rotate-0 my-2 sm:my-0 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                                     ➔
                                 </div>
 
-                                {/* Nodo Objetivo */}
+                                {/* Target Node */}
                                 <div className="relative group flex-1 max-w-[200px] w-full">
                                     <div className="absolute -inset-2 bg-gradient-to-b from-pink-500/30 to-pink-800/30 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition duration-500"></div>
                                     <div className="bg-slate-900/80 p-5 rounded-2xl border border-pink-500/30 relative flex flex-col items-center shadow-lg transform transition-all group-hover:-translate-y-1 w-full text-center backdrop-blur-md">

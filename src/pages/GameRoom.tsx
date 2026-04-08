@@ -11,7 +11,7 @@ export default function GameRoom() {
     const [chain, setChain] = useState<GameNode[]>([startNode]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Cuando el contexto cambie de pantalla (hacia 'ranking'), resetear el estado de carga
+    // Reset submitting state when the screen transitions to ranking
     useEffect(() => {
         if (screen === 'ranking') setIsSubmitting(false);
     }, [screen]);
@@ -28,16 +28,16 @@ export default function GameRoom() {
         if (isTargetReached && !isSubmitting) {
             setIsSubmitting(true);
             submitChain(chain.map(n => ({ id: n.id, type: n.type })));
-            // El isSubmitting se resetea automáticamente cuando screen cambie a 'ranking'
+            // isSubmitting resets automatically when screen changes to 'ranking'
         }
     };
 
     return (
         <div className="max-w-6xl mx-auto grid grid-cols-1 xl:grid-cols-4 gap-6 pt-4 pb-16 px-4 md:px-6">
             
-            {/* COLUMNA IZQUIERDA: Leaderboard & Objetivo */}
+            {/* LEFT COLUMN: Leaderboard & Objective */}
             <div className="xl:col-span-1 space-y-4 flex flex-col">
-                {/* OBJETIVO CAJA DESTACADA */}
+                {/* OBJECTIVE BOX */}
                 <div className="bg-gradient-to-b from-slate-900 to-slate-950 p-5 rounded-2xl border border-pink-500/30 shadow-[0_0_20px_rgba(236,72,153,0.1)] relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500"></div>
                     <div className="absolute -inset-10 bg-pink-500/10 blur-2xl rounded-full group-hover:bg-pink-500/20 transition-colors"></div>
@@ -50,7 +50,7 @@ export default function GameRoom() {
                     </div>
                 </div>
 
-                {/* LEADERBOARD EN TIEMPO REAL */}
+                {/* REAL-TIME LEADERBOARD */}
                 <div className="bg-slate-900/60 p-5 rounded-2xl border border-slate-700/50 backdrop-blur-xl flex-grow shadow-lg">
                     <h3 className="text-white text-xs font-black mb-4 tracking-widest flex items-center justify-between border-b border-slate-800 pb-2">
                         POSICIONES
@@ -75,10 +75,10 @@ export default function GameRoom() {
                 </div>
             </div>
 
-            {/* COLUMNA DERECHA: El Juego (Línea de tiempo) */}
+            {/* RIGHT COLUMN: Game (Connection Timeline) */}
             <div className="xl:col-span-3 space-y-6 flex flex-col">
                 
-                {/* ÁREA DE BÚSQUEDA */}
+                {/* SEARCH AREA */}
                 <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700/50 shadow-xl backdrop-blur-xl shrink-0 relative z-50">
                     {!isTargetReached ? (
                         <div className="max-w-xl mx-auto flex flex-col gap-3 animate-in fade-in zoom-in-95">
@@ -120,20 +120,20 @@ export default function GameRoom() {
                     )}
                 </div>
 
-                {/* LÍNEA DE TIEMPO SENSACIONAL */}
+                {/* CONNECTION TIMELINE */}
                 <div className="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-6 flex-grow shadow-inner relative min-h-[250px] z-10 w-full flex items-center justify-center">
                     <div className="flex flex-wrap items-center justify-center gap-y-8 gap-x-2 w-full pb-2">
                         {chain.map((node, i) => (
                             <div key={`${node.id}-${i}`} className="flex items-center group relative">
                                 
-                                {/* Nodo */}
+                                {/* Node card */}
                                 <div className={`relative flex flex-col items-center bg-slate-900/80 p-3 rounded-xl border-2 transform transition-all hover:-translate-y-1 hover:shadow-xl hover:z-20 w-32 min-h-[170px] justify-start pt-4 ${i === 0 ? 'border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : isTargetReached && i === chain.length - 1 ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'border-slate-700/50 hover:border-slate-500'}`}>
                                     
                                     <span className="absolute -top-2 -right-2 w-6 h-6 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center text-[10px] font-black text-slate-400 shadow">
                                         {i + 1}
                                     </span>
 
-                                    {/* Categoría superior pequeñita */}
+                                    {/* Node type badge */}
                                     <span className={`text-[8px] uppercase font-black tracking-widest mb-2 px-1.5 py-0.5 rounded border ${node.type === 'person' ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
                                         {node.type === 'person' ? 'Actor' : 'Película'}
                                     </span>
@@ -145,7 +145,7 @@ export default function GameRoom() {
                                     </p>
                                 </div>
 
-                                {/* Conector */}
+                                {/* Connector line */}
                                 {i < chain.length - 1 && (
                                     <div className="flex flex-col items-center justify-center px-2 md:px-4 relative z-0">
                                         <div className="w-6 md:w-10 h-0.5 bg-slate-700 rounded-full relative overflow-hidden group-hover:bg-slate-500 transition-colors">

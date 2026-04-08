@@ -38,25 +38,25 @@ export interface RoundResult {
     score: number;
     message: string;
     players?: Player[];
-    error?: boolean; // Flag opcional del backend cuando falla la validación
+    error?: boolean; // Optional flag sent by the backend when chain validation fails
 }
 
 export interface GameContextType {
     lobbyCode: string;
     players: Player[];
     username: string;
-    hostUsername: string; // <--- AGREGADO PARA ROBUSTEZ Y EVITAR MULTI-HOSTING
+    hostUsername: string; // Explicit host identity — prevents array-order-based role assignment
     startNode: GameNode | null;
     targetNode: GameNode | null;
     gameMessage: string;
     screen: 'home' | 'lobby' | 'game' | 'ranking';
     
-    // Setters
+    // State setters
     setGameData: (data: any) => void;
     setScreen: (screen: 'home' | 'lobby' | 'game' | 'ranking') => void;
     setGameMessage: (msg: string) => void;
 
-    // Acciones de Juego (Eventos Socket)
+    // Game actions (socket events)
     createLobby: (data: any) => void;
     joinLobby: (data: any) => void;
     startGame: () => void;
@@ -68,6 +68,6 @@ export interface SearchInputProps {
     label: string;
     type: 'person' | 'movie';
     onSelect: (node: GameNode) => void;
-    contextId?: string;      // ID del último nodo (para búsqueda contextual en GameRoom)
-    contextType?: 'person' | 'movie'; // Tipo del último nodo
+    contextId?: string;       // ID of the last selected node (for contextual search in GameRoom)
+    contextType?: 'person' | 'movie'; // Type of the last selected node
 }

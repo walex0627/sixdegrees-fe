@@ -17,7 +17,7 @@ export default function Home() {
     // Join Mode States
     const [inputCode, setInputCode] = useState('');
 
-    // Leer URL al iniciar para obtener el gameId si te invitaron por enlace
+    // Read URL params on mount to auto-join via invite link (?gameId=...)
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('gameId');
@@ -52,7 +52,7 @@ export default function Home() {
 
     return (
         <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 w-full transition-all duration-500">
-            {/* Título animado */}
+            {/* Animated title */}
             <h1 className="text-4xl md:text-5xl font-black text-center mb-10 tracking-tighter cursor-default">
                 <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:drop-shadow-[0_0_25px_rgba(236,72,153,0.5)] transition-all">
                     The Six Degrees
@@ -64,7 +64,7 @@ export default function Home() {
                 
                 <div className="bg-slate-900/60 p-6 md:p-8 rounded-3xl border border-slate-700/50 backdrop-blur-2xl relative shadow-2xl flex flex-col items-center min-h-[250px] justify-center overflow-hidden w-full">
                     
-                    {/* PASO 1: APODO */}
+                    {/* STEP 1: USERNAME */}
                     {step === 1 && (
                         <div className="w-full max-w-md mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4">
                             <div className="text-center">
@@ -89,7 +89,7 @@ export default function Home() {
                         </div>
                     )}
 
-                    {/* PASO 2: MODO DE JUEGO */}
+                    {/* STEP 2: GAME MODE */}
                     {step === 2 && (
                         <div className="w-full max-w-lg mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4">
                             <div className="text-center">
@@ -121,7 +121,7 @@ export default function Home() {
                         </div>
                     )}
 
-                    {/* PASO 3: CREAR o UNIRSE */}
+                    {/* STEP 3: CREATE or JOIN */}
                     {step === 3 && mode === 'create' && (
                         <div className="w-full max-w-xl mx-auto space-y-6 animate-in fade-in zoom-in-95">
                             <h2 className="text-xl font-bold text-blue-400 text-center mb-6">Configurar Desafío</h2>
